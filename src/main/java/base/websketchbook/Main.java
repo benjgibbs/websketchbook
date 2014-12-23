@@ -8,7 +8,8 @@ import com.google.common.base.Strings;
 
 public class Main {
     public static void main(String[] args) {
-	String portStr = System.getProperty("process.env.PORT");
+	ProcessBuilder process = new ProcessBuilder();
+	String portStr = process.environment().get("PORT");
 	int port = 4567;
 	if(!Strings.isNullOrEmpty(portStr)){
 	    port = Integer.parseInt(portStr);
