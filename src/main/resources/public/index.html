@@ -6,13 +6,25 @@
 <script src="js/jquery-2.1.3.js"></script>
 <script src="js/bootstrap.min.js"></script>
 
+<style type="text/css">
+
+.drawing {
+	padding:20px;
+}
+
+</style>
+
+
 <script type="text/javascript">
-	var pixels = 800;
-	var len = 200;
-	var size = pixels / len;
+	var len = 50;
+	var loopTime = 300;
+	var pixels = getPixels();
+	var size = Math.round(pixels / len);
 	var cells = new Array(2); //backbuffered so applied at once
 	var c = 0;
 	var prob = 1.0 / 25.0;
+	var resizeTimer;
+	var loopTimer;
 
 	function init() {
 		for (var i = 0; i < len; i++) {
@@ -27,6 +39,7 @@
 	}
 
 	function draw() {
+		clearCanvas();
 		var canvas = $("#surface")[0];
 		var ctx = canvas.getContext("2d");
 		ctx.fillStyle = "#F00000";
@@ -102,19 +115,60 @@
 		}
 		init();
 
-		window.setInterval(function() {
-			draw();
-			next();
-		}, 300);
+		loopTimeout = window.setInterval(loop, loopTime);
 	});
+
+	function loop() {
+		if (!someAlive()) {
+			init();
+		}
+		draw();
+		next();
+	}
+
+	$(window).resize(function() {
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(resize, 100);
+	});
+
+	function getPixels() {
+		var width = $(window).width();
+		var height = $(window).height();
+		var newSize = width > height ? height : width;
+		return Math.round(newSize - 100); // for the heading
+	}
+
+	function clearCanvas() {
+		var canvas = $("#surface")[0];
+		var ctx = canvas.getContext("2d");
+		ctx.clearRect(0, 0, canvas.height, canvas.width);
+	}
+
+	function resize() {
+		window.clearTimeout(loopTimer);
+		clearCanvas();
+		pixels = getPixels();
+
+		size = Math.round(pixels / len);
+		loopTimer = window.setInterval(loop, loopTime);
+	}
+
+	function someAlive() {
+		for (var i = 0; i < len; i++) {
+			for (var j = 0; j < len; j++) {
+				if (cells[c][i][j] == 1) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 </script>
-
-
-
 </head>
 
 <body>
 	<h1>Conway</h1>
-	<canvas id="surface"></canvas>
-
+	<div class="drawing">
+		<canvas id="surface"></canvas>
+	</div>
 </body>
