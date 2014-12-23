@@ -1,0 +1,120 @@
+<!doctype html>
+<head>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+
+<script src="js/jquery-2.1.3.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+	var pixels = 800;
+	var len = 200;
+	var size = pixels / len;
+	var cells = new Array(2); //backbuffered so applied at once
+	var c = 0;
+	var prob = 1.0 / 25.0;
+
+	function init() {
+		for (var i = 0; i < len; i++) {
+			for (var j = 0; j < len; j++) {
+				if (Math.random() < prob) {
+					cells[c][i][j] = 1;
+				} else {
+					cells[c][i][j] = 0;
+				}
+			}
+		}
+	}
+
+	function draw() {
+		var canvas = $("#surface")[0];
+		var ctx = canvas.getContext("2d");
+		ctx.fillStyle = "#F00000";
+
+		for (var i = 0; i < len; i++) {
+			for (var j = 0; j < len; j++) {
+				var x = size * j;
+				var y = size * i;
+				if (cells[c][i][j] == 1) {
+					ctx.fillRect(x, y, x + size, y + size);
+				} else {
+					ctx.clearRect(x, y, x + size, y + size);
+				}
+			}
+		}
+	}
+
+	function next() {
+		var n = (c + 1) % 2;
+
+		for (var i = 0; i < len; i++) {
+			for (var j = 0; j < len; j++) {
+				switch (neighbours(i, j)) {
+				case 0:
+				case 1:
+					cells[n][i][j] = 0;
+					break;
+				case 2:
+					cells[n][i][j] = cells[c][i][j];
+					break;
+				case 3:
+					if (cells[c][i][j] == 0) {
+						cells[n][i][j] = 1;
+					} else {
+						cells[n][i][j] = cells[c][i][j];
+					}
+					break;
+				default:
+					cells[n][i][j] = 0;
+					break;
+				}
+			}
+		}
+		c = n;
+	}
+
+	function neighbours(i, j) {
+		var count = 0;
+		var imin = i > 1 ? i - 1 : 0;
+		var imax = imin + 3 < len ? imin + 3 : len;
+		var jmin = j > 1 ? j - 1 : 0;
+		var jmax = jmin + 3 < len ? jmin + 3 : len;
+		for (var i1 = imin; i1 < imax; i1++) {
+			for (var j1 = jmin; j1 < jmax; j1++) {
+				if (i == i1 && j == j1) {
+					continue;
+				}
+				count += cells[c][i1][j1];
+			}
+		}
+		return count;
+	}
+
+	$(document).ready(function() {
+		var canvas = $("#surface")[0];
+		canvas.setAttribute("width", pixels);
+		canvas.setAttribute("height", pixels);
+		cells[0] = new Array(len);
+		cells[1] = new Array(len);
+		for (var i = 0; i < len; i++) {
+			cells[0][i] = new Array(len);
+			cells[1][i] = new Array(len);
+		}
+		init();
+
+		window.setInterval(function() {
+			draw();
+			next();
+		}, 300);
+	});
+</script>
+
+
+
+</head>
+
+<body>
+	<h1>Conway</h1>
+	<canvas id="surface"></canvas>
+
+</body>
