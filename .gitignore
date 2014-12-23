@@ -12,5 +12,7 @@
 hs_err_pid*
 
 # Local File
-.settings/**
-target/**
+/.settings/**
+/.settings
+/target/**
+/target/
