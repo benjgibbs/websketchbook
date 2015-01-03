@@ -12,13 +12,13 @@
 <#list listoflinks! as link>
 <div class="row">
 	<div class="col-xs-4 thumb"> 
-		<img src="${link.getThumb()}"> 
+		<a href="${link.getUrl()}"><img src="${link.getThumb()}"></a> 
 	</div>
 	<div class="col-xs-8">
 		<div><a href="${link.getUrl()}">${link.getTitle()}</a> </div>
 		<div>${link.getCreated()}</div>
-		<div>${link.getDomain()}</div>
-		<div>${link.getAuthor()}</div>
+		<div><a href="http://${link.getDomain()}">${link.getDomain()}</a></div>
+		<div><a href="http://reddit.com/u/${link.getAuthor()}">${link.getAuthor()}</a> </div>
 	</div>
 </div>
 </#list> 
