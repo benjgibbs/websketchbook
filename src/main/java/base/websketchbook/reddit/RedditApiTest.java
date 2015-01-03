@@ -18,49 +18,48 @@ import base.websketchbook.reddit.JsonParser.LinkData;
 import base.websketchbook.reddit.JsonParser.SubReddit;
 
 public class RedditApiTest {
-	
-	FreeMarkerEngine fme = new FreeMarkerEngine();
 
-	public RedditApiTest() throws IOException {
-		get("/reddit", (req, res) -> {
-			Map<String, Object> attribs = new HashMap<>();
-			try {
-				Object sub = req.queryParams("sub");
-				Object filter = req.queryParams("filter");
-				String subStr = sub != null ? (String)sub : "aww"; 
-				attribs.put("subreddit", subStr);
+    FreeMarkerEngine fme = new FreeMarkerEngine();
 
-				SubReddit sr = getReddit(subStr);
-				List<LinkData> linkData = new ArrayList<>();
-				for (Link link : sr.data.children) {
-					if(filter != null && !link.data.domain.equals(filter)){
-						continue;
-					}
-					linkData.add(link.data);
-				}
-				attribs.put("listoflinks", linkData);
+    public RedditApiTest() throws IOException {
+        get("/reddit", (req, res) -> {
+            Map<String, Object> attribs = new HashMap<>();
+            try {
+                Object sub = req.queryParams("sub");
+                Object filter = req.queryParams("filter");
+                String subStr = sub != null ? (String) sub : "aww";
+                attribs.put("subreddit", subStr);
 
-			} catch (Exception e) {
-				attribs.put("error", e);
-			}
+                SubReddit sr = getReddit(subStr);
+                List<LinkData> linkData = new ArrayList<>();
+                for (Link link : sr.data.children) {
+                    if (filter != null && !link.data.domain.equals(filter)) {
+                        continue;
+                    }
+                    linkData.add(link.data);
+                }
+                attribs.put("listoflinks", linkData);
 
-			return new ModelAndView(attribs, "reddit.ftl");
-		}, fme);
-	}
+            } catch (Exception e) {
+                attribs.put("error", e);
+            }
 
-	SubReddit getReddit(String subreddit) throws Exception {
-		URL reddit = new URL("https://www.reddit.com/r/" + subreddit + "/top.json?limit=100");
-		InputStreamReader isr = new InputStreamReader(reddit.openStream());
-		SubReddit fromJson = JsonParser.read(isr);
-		return fromJson;
-	}
-	
-	SubReddit getFileReddit(String subreddit) throws Exception {
-		InputStream stream = this.getClass().getResourceAsStream("/aww.json");
-		InputStreamReader isr = new InputStreamReader(stream);
+            return new ModelAndView(attribs, "reddit.ftl");
+        }, fme);
+    }
 
-		SubReddit fromJson = JsonParser.read(isr);
-		return fromJson;
-	}
+    SubReddit getReddit(String subreddit) throws Exception {
+        URL reddit = new URL("https://www.reddit.com/r/" + subreddit + "/top.json?limit=100");
+        InputStreamReader isr = new InputStreamReader(reddit.openStream());
+        SubReddit fromJson = JsonParser.read(isr);
+        return fromJson;
+    }
+
+    SubReddit getFileReddit(String subreddit) throws Exception {
+        InputStream stream = this.getClass().getResourceAsStream("/aww.json");
+        InputStreamReader isr = new InputStreamReader(stream);
+        SubReddit fromJson = JsonParser.read(isr);
+        return fromJson;
+    }
 
 }

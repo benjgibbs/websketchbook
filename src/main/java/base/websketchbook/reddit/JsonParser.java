@@ -3,7 +3,10 @@ package base.websketchbook.reddit;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,12 +32,15 @@ public class JsonParser {
 	}
 
 	public static class LinkData {
-		public String domain;
-		public String thumbnail;
-		public Date created_utc;
-		public int ups;
-		public String url;
-		public String title;
+		String domain;
+		String thumbnail;
+		Date created_utc;
+		int ups;
+		String url;
+		String title;
+		String author;
+		
+		public static DateFormat formater = new SimpleDateFormat();
 
 		public String getThumb() {
 			return thumbnail;
@@ -50,6 +56,13 @@ public class JsonParser {
 
 		public String getDomain() {
 			return domain;
+		}
+		
+		public String getCreated() {
+		    return formater.format(created_utc);
+		}
+		public String getAuthor() {
+		    return author;
 		}
 	}
 
