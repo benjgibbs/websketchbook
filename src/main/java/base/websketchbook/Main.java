@@ -2,15 +2,27 @@ package base.websketchbook;
 
 import static spark.Spark.get;
 import static spark.SparkBase.staticFileLocation;
+
+import java.io.IOException;
+
 import spark.Spark;
+import base.websketchbook.countdown.Countdown;
+import base.websketchbook.reddit.RedditApiTest;
 
 import com.google.common.base.Strings;
 
 public class Main {
-	public static void main(String[] args) {
+	
+	static Countdown countdown = null;
+	static RedditApiTest reddit = null;
+	
+	public static void main(String[] args) throws IOException {
 		setPort();
 		staticFileLocation("/public");
 		get("/hello", (req, res) -> "Hello World");
+		countdown = new Countdown();
+		reddit = new RedditApiTest();
+		
 	}
 
 	private static void setPort() {
