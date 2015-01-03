@@ -34,7 +34,7 @@ public class JsonTest {
 	@Test
 	public void testGettingAUrlFromReddit() throws Exception {
 		RedditApiTest api = new RedditApiTest();
-		SubReddit fromJson = api.getReddit("aww");
+		SubReddit fromJson = api.getReddit("aww",null,null);
 		int i = 0;
 		for(Link ld : fromJson.data.children) {
 			assertThat(ld.data.url, notNullValue());
