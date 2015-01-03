@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -15,7 +16,7 @@ import base.websketchbook.reddit.JsonParser.SubReddit;
 public class JsonTest {
 
 	@Test
-	public void test() {
+	public void test() throws IOException {
 		InputStream stream = this.getClass().getResourceAsStream("/aww.json");
 		InputStreamReader isr = new InputStreamReader(stream);
 		SubReddit fromJson = JsonParser.read(isr);

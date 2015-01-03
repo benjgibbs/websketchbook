@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,10 +25,10 @@ import base.websketchbook.reddit.JsonParser.SubReddit;
 
 public class RedditApiTest {
 
-    FreeMarkerEngine fme = new FreeMarkerEngine();
+    final private FreeMarkerEngine fme = new FreeMarkerEngine();
+    final private String UserAgent = "apitest/1.0 by u/bengibbs";
 
     public RedditApiTest() throws IOException {
-
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_21);
         cfg.setURLEscapingCharset("UTF-8");
         cfg.setDirectoryForTemplateLoading(new File("src/main/resources/spark/template/freemarker"));
@@ -85,8 +86,11 @@ public class RedditApiTest {
     SubReddit getReddit(String subreddit, String before, String after) throws Exception {
         String url = createUrl(subreddit, before, after);
         URL reddit = new URL(url);
-        InputStreamReader isr = new InputStreamReader(reddit.openStream());
+        URLConnection connection = reddit.openConnection();
+        connection.setRequestProperty("User-Agent", UserAgent);
+        InputStreamReader isr = new InputStreamReader(connection.getInputStream());
         SubReddit fromJson = JsonParser.read(isr);
+        isr.close();
         return fromJson;
     }
 

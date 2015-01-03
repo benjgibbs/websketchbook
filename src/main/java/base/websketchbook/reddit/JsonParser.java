@@ -1,6 +1,7 @@
 package base.websketchbook.reddit;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -65,7 +66,7 @@ public class JsonParser {
         public String getAuthor() {
             return author;
         }
-        
+
         public String getName() {
             return name;
         }
@@ -78,10 +79,17 @@ public class JsonParser {
         }
     }
 
-    static SubReddit read(InputStreamReader isr) {
-        BufferedReader br = new BufferedReader(isr);
-        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonDateDeserializer()).create();
-        SubReddit fromJson = gson.fromJson(br, JsonParser.SubReddit.class);
-        return fromJson;
+    static SubReddit read(InputStreamReader isr) throws IOException {
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(isr);
+            Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new JsonDateDeserializer()).create();
+            SubReddit fromJson = gson.fromJson(br, JsonParser.SubReddit.class);
+            return fromJson;
+        } finally {
+            if (br != null) {
+                br.close();
+            }
+        }
     }
 }
