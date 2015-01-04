@@ -34,40 +34,35 @@ public class RedditApiTest {
         cfg.setDirectoryForTemplateLoading(new File("src/main/resources/spark/template/freemarker"));
         fme.setConfiguration(cfg);
 
-        get("/reddit", (req, res) -> {
+        get("/reddit/:sub", (req, res) -> {
             Map<String, Object> attribs = new HashMap<>();
-            String prevLink = "/reddit?";
-            String nextLink = "/reddit?";
+            String prevLink = "/reddit";
+            String nextLink = "/reddit";
             String subStr = "aww";
             List<LinkData> linkData = new ArrayList<>();
 
             try {
-                Object sub = req.queryParams("sub");
+                Object sub = req.params(":sub");
                 if (sub != null) {
                     subStr = (String) sub;
-                    prevLink += "sub=" + subStr;
-                    nextLink += "sub=" + subStr;
+                    prevLink += ("/" + subStr);
+                    nextLink += ("/" + subStr);
                 }
 
-                Object filter = req.queryParams("filter");
-                Object before = req.queryParams("filter");
+                Object before = req.queryParams("before");
                 Object after = req.queryParams("after");
-
                 attribs.put("subreddit", subStr);
 
-                SubReddit sr = getReddit(subStr, (String) before, (String) after);
+                SubReddit sr = getReddit(subStr, (String) before, (String)after);
 
                 Link[] children = sr.data.children;
                 for (Link link : children) {
-                    if (filter != null && !link.data.domain.equals(filter)) {
-                        continue;
-                    }
                     linkData.add(link.data);
                 }
 
                 if (children.length > 0) {
-                    prevLink = "/reddit?sub=" + subStr + "&before=" + children[0].data.name;
-                    nextLink = "/reddit?sub=" + subStr + "&after=" + children[children.length - 1].data.name;
+                    prevLink += "?before=" + children[0].data.name;
+                    nextLink += "?after=" + children[children.length - 1].data.name;
                 }
 
             } catch (Exception e) {
@@ -90,16 +85,15 @@ public class RedditApiTest {
         connection.setRequestProperty("User-Agent", UserAgent);
         InputStreamReader isr = new InputStreamReader(connection.getInputStream());
         SubReddit fromJson = JsonParser.read(isr);
-        isr.close();
         return fromJson;
     }
 
     private String createUrl(String subreddit, String before, String after) {
         String url = "http://www.reddit.com/r/" + subreddit + "/top.json?limit=100";
         if (!Strings.isNullOrEmpty(before)) {
-            url += "&before=" + before;
+                url += ("&before=" + before);
         } else if (!Strings.isNullOrEmpty(after)) {
-            url += "&after=" + after;
+            url += ("&after=" + after);
         }
         return url;
     }
