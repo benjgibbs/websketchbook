@@ -8,6 +8,7 @@ import java.io.IOException;
 import spark.Spark;
 import base.websketchbook.countdown.Countdown;
 import base.websketchbook.reddit.RedditApiTest;
+import base.websketchbook.whoisthat.WhoIsThat;
 
 import com.google.common.base.Strings;
 
@@ -15,6 +16,7 @@ public class Main {
 	
 	static Countdown countdown = null;
 	static RedditApiTest reddit = null;
+	static WhoIsThat whoIsThat = null;
 	
 	public static void main(String[] args) throws IOException {
 		setPort();
@@ -22,6 +24,7 @@ public class Main {
 		get("/hello", (req, res) -> "Hello World");
 		countdown = new Countdown();
 		reddit = new RedditApiTest();
+		whoIsThat = new WhoIsThat();
 		
 	}
 
