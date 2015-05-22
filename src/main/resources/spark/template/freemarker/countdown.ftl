@@ -6,14 +6,25 @@
 
 <script src="/js/jquery-2.1.4.js"></script>
 <script src="/js/bootstrap.min.js"></script>
+<style>
+	form {
+		text-align: center;
+	}
+	.input {
+		text-align: center;
+	}
+</style>
+
 </head>
 <body>
-<h1>Solutions</h1>
-
-
-
+<h3 class="input">Letters</h3>
+<form action="/countdown" method="GET">
+<input type="text" name="letters">
+<input type="submit">
+</form>
+<h3>Solutions</h3>
 <ul>
-<#list wordList! as word>
+<#list wordlist! as word>
 <li>${word}
 </#list>
 </ul>

@@ -4,10 +4,11 @@ import static spark.Spark.get;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -15,17 +16,40 @@ import freemarker.template.Configuration;
 
 public class Countdown {
 	
+	private static final String TEMPLATE = "src/main/resources/spark/template/freemarker";
+
 	final private FreeMarkerEngine fme = new FreeMarkerEngine();
+	
+	final private Solver solver = new Solver("/usr/share/dict/words");
 	
 	public Countdown() throws IOException {
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_21);
         cfg.setURLEscapingCharset("UTF-8");
-        cfg.setDirectoryForTemplateLoading(new File("src/main/resources/spark/template/freemarker"));
+        cfg.setDirectoryForTemplateLoading(new File(TEMPLATE));
         fme.setConfiguration(cfg);
 		
 		get("/countdown", (req,res) -> {
+			String letters = req.queryParams("letters");
+			List<String> words = new ArrayList<>();
+			if(letters != null){
+				letters = letters.toLowerCase();
+				List<Character> letterList = new ArrayList<>();
+				for(int i = 0; i < letters.length(); i++){
+					char c = letters.charAt(i);
+					if(c >= 'a' && c <= 'z') {
+						letterList.add(c);
+					}
+				}
+				solver.solve(letterList, words);
+			}
+			
+			words.sort( (a,b) -> b.length()-a.length());
+			List<String> withLengths = words.stream()
+					.map(w -> (w + ": " + w.length())).collect(Collectors.toList());
+			
 			Map<String, Object> model = new HashMap<>();
-			model.put("wordList", Lists.newArrayList("a","b","c"));
+			
+			model.put("wordlist", withLengths);
 			return new ModelAndView(model, "countdown.ftl");
 		},fme);
 	}
