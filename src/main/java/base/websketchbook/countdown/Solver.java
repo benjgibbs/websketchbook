@@ -34,6 +34,7 @@ public class Solver {
 	Node root = new Node();
 
 	public Solver(String dictionary) throws IOException {
+		
 		Path path = Paths.get(dictionary);
 		for (String word : Files.readAllLines(path)) {
 			final Stack<Node> stack = new Stack<Node>();

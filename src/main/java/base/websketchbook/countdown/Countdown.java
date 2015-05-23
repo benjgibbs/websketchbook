@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Throwables;
+
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 import freemarker.template.Configuration;
@@ -20,9 +22,11 @@ public class Countdown {
 
 	final private FreeMarkerEngine fme = new FreeMarkerEngine();
 	
-	final private Solver solver = new Solver("/usr/share/dict/words");
+	final private Solver solver; 
 	
 	public Countdown() throws IOException {
+		solver = createSolver();
+		
 		Configuration cfg = new Configuration(Configuration.VERSION_2_3_21);
         cfg.setURLEscapingCharset("UTF-8");
         cfg.setDirectoryForTemplateLoading(new File(TEMPLATE));
@@ -58,8 +62,20 @@ public class Countdown {
 		},fme);
 	}
 
+	private Solver createSolver() {
+		Solver solver = null;
+		try {
+			solver = new Solver("src/main/resources/words.txt");
+		} catch(IOException e){
+			Throwables.propagate(e);
+		}
+		
+		return solver;
+	}
+
 	private String createUrl(String w) {
-		return "<a href=\"http://www.oxforddictionaries.com/definition/english/" + w + "\">dict</a>";
+		return " <a href=\"http://www.oxforddictionaries.com/definition/english/" + w + "\">oxford</a> " +
+			   " <a href=\"http://dictionary.cambridge.org/dictionary/british/" + w + "\">cambridge</a>";
 	}
 
 }
