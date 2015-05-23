@@ -7,16 +7,14 @@
 <script src="js/bootstrap.min.js"></script>
 
 <style type="text/css">
-
 .drawing {
-	padding:20px;
+	padding: 20px;
 }
-
 </style>
 
 
 <script type="text/javascript">
-	var len = 50;
+	var len = 250;
 	var loopTime = 300;
 	var pixels = getPixels();
 	var size = Math.round(pixels / len);
@@ -167,8 +165,17 @@
 </head>
 
 <body>
-	<h1>Conway</h1>
-	<div class="drawing">
-		<canvas id="surface"></canvas>
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-9">
+			<h1>Conway</h1>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8 drawing">
+			<canvas id="surface"></canvas>
+		</div>
 	</div>
 </body>
