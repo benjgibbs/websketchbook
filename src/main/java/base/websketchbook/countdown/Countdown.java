@@ -52,7 +52,7 @@ public class Countdown {
 					.filter( w -> w.length() > 3)
 					.map(w -> w.toLowerCase())
 					.distinct()
-					.map(w -> (w + ": " + w.length() + createUrl(w)))
+					.map(w -> (w + " (" + w.length() + ")" + createUrl(w)))
 					.collect(Collectors.toList());
 			
 			Map<String, Object> model = new HashMap<>();
