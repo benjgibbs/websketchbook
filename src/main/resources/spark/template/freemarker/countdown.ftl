@@ -8,31 +8,39 @@
 <script src="/js/bootstrap.min.js"></script>
 <style>
 	form {
-		text-align: center;
+		text-align: left;
 	}
 	.input {
-		text-align: center;
+		text-align: left;
 	}
 </style>
 
 </head>
 <body>
-<h3 class="input">Letters</h3>
-<form action="/countdown" method="GET">
-<input type="text" name="letters">
-<input type="submit">
-</form>
-<h3>Solutions</h3>
-<ul>
-<#list wordlist! as word>
-<li>${word}
-</#list>
-</ul>
- 
-<#if error??>
-<div class="error">
-<h3>Error</h3>
-${error}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-2"> </div>
+		<div class="col-md-9">
+			<h2 class="input">Letters</h3>
+			<form action="/countdown" method="GET">
+				<input type="text" name="letters">
+				<input type="submit">
+			</form>
+			<h2>Solutions</h3>
+			<ol>
+				<#list wordlist! as word>
+				<li>${word}
+			</#list>
+			</ol>
+			<#if error??>
+				<div class="error">
+					<h3>Error</h3>
+					${error}
+				</div>
+			</#if>
+		</div>
+		<div class="col-md-1"> </div>
+	</div>
 </div>
-</#if>
+
 </body>

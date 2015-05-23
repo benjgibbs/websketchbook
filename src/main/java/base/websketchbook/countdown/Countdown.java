@@ -45,13 +45,21 @@ public class Countdown {
 			
 			words.sort( (a,b) -> b.length()-a.length());
 			List<String> withLengths = words.stream()
-					.map(w -> (w + ": " + w.length())).collect(Collectors.toList());
+					.filter( w -> w.length() > 3)
+					.map(w -> w.toLowerCase())
+					.distinct()
+					.map(w -> (w + ": " + w.length() + createUrl(w)))
+					.collect(Collectors.toList());
 			
 			Map<String, Object> model = new HashMap<>();
 			
 			model.put("wordlist", withLengths);
 			return new ModelAndView(model, "countdown.ftl");
 		},fme);
+	}
+
+	private String createUrl(String w) {
+		return "<a href=\"http://www.oxforddictionaries.com/definition/english/" + w + "\">dict</a>";
 	}
 
 }
